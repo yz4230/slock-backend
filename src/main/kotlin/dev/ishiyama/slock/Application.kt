@@ -1,6 +1,7 @@
-package dev.ishiyama
+package dev.ishiyama.slock
 
-import dev.ishiyama.tables.Pets
+import dev.ishiyama.slock.petstore.PetsTable
+import dev.ishiyama.slock.petstore.petStoreModule
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -24,7 +25,8 @@ fun main(args: Array<String>) {
         password = "password",
     )
     transaction {
-        SchemaUtils.create(Pets)
+        SchemaUtils.create(PetsTable)
+        SchemaUtils.create(*Tables.allTables)
     }
 
     EngineMain.main(args)
@@ -42,7 +44,7 @@ fun Application.module() {
     }
     install(Koin) {
         slf4jLogger()
-        modules(appModule)
+        modules(petStoreModule)
     }
     install(CallLogging) {
         level = Level.DEBUG

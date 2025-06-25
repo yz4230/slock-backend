@@ -1,10 +1,19 @@
-package dev.ishiyama
+package dev.ishiyama.slock.petstore
 
-import dev.ishiyama.tables.Pets
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+
+object PetsTable : Table("pets") {
+    val id = integer("id").autoIncrement()
+    val name = varchar("name", 64)
+    val age = integer("age")
+    val type = varchar("type", 64)
+
+    override val primaryKey = PrimaryKey(id)
+}
 
 @Serializable
 data class Pet(
@@ -26,35 +35,35 @@ interface PetRepository {
 
 class DatabasePetRepository : PetRepository {
     override fun listPets(): List<Pet> =
-        Pets.selectAll().map {
+        PetsTable.selectAll().map {
             Pet(
-                id = it[Pets.id],
-                name = it[Pets.name],
-                type = it[Pets.type],
-                age = it[Pets.age],
+                id = it[PetsTable.id],
+                name = it[PetsTable.name],
+                type = it[PetsTable.type],
+                age = it[PetsTable.age],
             )
         }
 
     override fun getPetById(id: Int): Pet? =
-        Pets
+        PetsTable
             .selectAll()
-            .where { Pets.id eq id }
+            .where { PetsTable.id eq id }
             .map {
                 Pet(
-                    id = it[Pets.id],
-                    name = it[Pets.name],
-                    type = it[Pets.type],
-                    age = it[Pets.age],
+                    id = it[PetsTable.id],
+                    name = it[PetsTable.name],
+                    type = it[PetsTable.type],
+                    age = it[PetsTable.age],
                 )
             }.singleOrNull()
 
     override fun addPet(pet: Pet): Pet {
         val id =
-            Pets.insert {
+            PetsTable.insert {
                 it[name] = pet.name
                 it[type] = pet.type
                 it[age] = pet.age
-            } get Pets.id
+            } get PetsTable.id
         return pet.copy(id = id)
     }
 }

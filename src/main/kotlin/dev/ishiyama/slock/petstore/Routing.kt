@@ -1,4 +1,4 @@
-package dev.ishiyama
+package dev.ishiyama.slock.petstore
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -8,15 +8,21 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 import org.koin.ktor.ext.inject
 
-fun Application.configureRouting() {
+val petStoreModule =
+    module {
+        singleOf(::DatabasePetRepository) { bind<PetRepository>() }
+        singleOf(::PetService)
+    }
+
+fun Application.configurePetStoreRouting() {
     val service by inject<PetService>()
 
     routing {
-        get("/") {
-            call.respondText("Hello World!")
-        }
         get("/pets/{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
             if (id == null) {
