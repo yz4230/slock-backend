@@ -28,4 +28,12 @@ dependencies {
     implementation(libs.ktor.server.call.logging)
     implementation(libs.koin.ktor)
     implementation(libs.koin.logger.slf4j)
+
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.crypt)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.kotlin.datetime)
+
+    implementation("org.postgresql:postgresql:42.7.7")
 }

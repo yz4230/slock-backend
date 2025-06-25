@@ -6,6 +6,7 @@ import org.koin.dsl.module
 
 val appModule =
     module {
-        singleOf(::InMemoryPetRepository) { bind<PetRepository>() }
+//        singleOf(::InMemoryPetRepository) { bind<PetRepository>() }
+        singleOf(::DatabasePetRepository) { bind<PetRepository>() }
         singleOf(::PetService)
     }
