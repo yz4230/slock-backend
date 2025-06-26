@@ -35,5 +35,5 @@ dependencies {
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.kotlin.datetime)
 
-    implementation("org.postgresql:postgresql:42.7.7")
+    implementation(libs.postgresql)
 }
