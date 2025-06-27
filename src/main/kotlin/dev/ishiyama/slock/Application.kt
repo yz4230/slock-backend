@@ -1,17 +1,34 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package dev.ishiyama.slock
 
+import dev.ishiyama.slock.core.repository.ChannelRepository
+import dev.ishiyama.slock.core.repository.ChannelRepositoryImpl
+import dev.ishiyama.slock.core.repository.Tables
+import dev.ishiyama.slock.core.repository.TransactionManager
+import dev.ishiyama.slock.core.repository.TransactionManagerImpl
 import dev.ishiyama.slock.petstore.PetsTable
 import dev.ishiyama.slock.petstore.petStoreModule
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.netty.EngineMain
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.resources.Resources
+import io.ktor.server.response.respond
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
@@ -32,7 +49,26 @@ fun main(args: Array<String>) {
     EngineMain.main(args)
 }
 
+fun Throwable.flatten(): List<Throwable> {
+    val result = mutableListOf<Throwable>()
+    var cause: Throwable? = this
+    while (cause != null) {
+        result.add(cause)
+        if (cause.cause == cause) {
+            break
+        }
+        cause = cause.cause
+    }
+    return result
+}
+
 fun Application.module() {
+    val slockModule =
+        module {
+            singleOf(::TransactionManagerImpl) { bind<TransactionManager>() }
+            singleOf(::ChannelRepositoryImpl) { bind<ChannelRepository>() }
+        }
+
     install(ContentNegotiation) {
         json(
             Json {
@@ -45,9 +81,26 @@ fun Application.module() {
     install(Koin) {
         slf4jLogger()
         modules(petStoreModule)
+        modules(slockModule)
     }
-    install(CallLogging) {
-        level = Level.DEBUG
+    install(CallLogging) { level = Level.DEBUG }
+    install(Resources)
+    install(StatusPages) {
+        exception<BadRequestException> { call, cause ->
+            val missingFieldException =
+                cause
+                    .flatten()
+                    .firstOrNull { MissingFieldException::class.isInstance(it) }
+                    .let { it as? MissingFieldException }
+            if (missingFieldException != null) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    FieldErrorResponse(missingFieldException),
+                )
+                return@exception
+            }
+            throw cause
+        }
     }
 
     configureRouting()

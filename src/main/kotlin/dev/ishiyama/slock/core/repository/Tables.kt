@@ -1,4 +1,4 @@
-package dev.ishiyama.slock
+package dev.ishiyama.slock.core.repository
 
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.datetime.timestampWithTimeZone

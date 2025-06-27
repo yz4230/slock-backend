@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.server.resources)
+    implementation(libs.ktor.server.status.pages)
     implementation(libs.koin.ktor)
     implementation(libs.koin.logger.slf4j)
 
