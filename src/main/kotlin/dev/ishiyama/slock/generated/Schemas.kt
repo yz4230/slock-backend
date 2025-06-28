@@ -7,7 +7,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.Serializable
 
-public object Models {
+public object Schemas {
   @Serializable
   public data class Channel(
     public val id: String,

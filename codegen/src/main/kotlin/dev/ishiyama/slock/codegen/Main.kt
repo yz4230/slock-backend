@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
     val result = OpenAPIParser().readLocation(options.schemaFile, null, parseOptions)
     val openAPI = result.openAPI
 
-    ModelsGenerator(openAPI, options).generate()
+    SchemasGenerator(openAPI, options).generate()
     PathsGenerator(openAPI, options).generate()
 
     println("✅ Code generation finished.")

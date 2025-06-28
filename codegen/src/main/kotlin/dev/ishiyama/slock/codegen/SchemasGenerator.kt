@@ -6,7 +6,7 @@ import com.squareup.kotlinpoet.FileSpec
 import io.swagger.v3.oas.models.OpenAPI
 import java.io.File
 
-class ModelsGenerator(
+class SchemasGenerator(
     val openAPI: OpenAPI,
     val buildOptions: BuildOptions,
 ) {
@@ -17,10 +17,10 @@ class ModelsGenerator(
                 .addMember("%S", "ktlint")
                 .build()
 
-        val modelsObject = ModelsObjectBuilder(openAPI).build()
+        val modelsObject = SchemasObjectBuilder(openAPI).build()
         val modelsKt =
             FileSpec.Companion
-                .builder(buildOptions.packageName, "Models")
+                .builder(buildOptions.packageName, "Schemas")
                 .addAnnotation(annot)
                 .addType(modelsObject)
                 .build()

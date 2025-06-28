@@ -12,7 +12,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class ModelsObjectBuilderTest {
+class SchemasObjectBuilderTest {
     @Test
     fun testSimple() {
         // Assuming you have a mock OpenAPI object to pass
@@ -31,7 +31,7 @@ class ModelsObjectBuilderTest {
         openAPI.components = Components()
         openAPI.components.schemas = mutableMapOf("TestSchema" to testSchema)
 
-        val builder = ModelsObjectBuilder(openAPI)
+        val builder = SchemasObjectBuilder(openAPI)
         val modelsObject = builder.build()
 
         // check Models.TestSchema.id -> Int
@@ -74,7 +74,7 @@ class ModelsObjectBuilderTest {
         openAPI.components = Components()
         openAPI.components.schemas = mutableMapOf("TestSchema" to testSchema)
 
-        val builder = ModelsObjectBuilder(openAPI)
+        val builder = SchemasObjectBuilder(openAPI)
         val modelsObject = builder.build()
         val spec = modelsObject.typeSpecs.firstOrNull { it.name == "TestSchema" }
         assertNotNull(spec)
@@ -123,7 +123,7 @@ class ModelsObjectBuilderTest {
 
         openAPI.components = Components()
         openAPI.components.schemas = mutableMapOf("TestSchema" to testSchema)
-        val builder = ModelsObjectBuilder(openAPI)
+        val builder = SchemasObjectBuilder(openAPI)
         val modelsObject = builder.build()
         val spec = modelsObject.typeSpecs.firstOrNull { it.name == "TestSchema" }
         assertNotNull(spec)

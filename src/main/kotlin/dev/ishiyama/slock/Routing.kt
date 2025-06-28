@@ -2,8 +2,8 @@ package dev.ishiyama.slock
 
 import dev.ishiyama.slock.core.repository.ChannelRepository
 import dev.ishiyama.slock.core.repository.TransactionManager
-import dev.ishiyama.slock.generated.Models
 import dev.ishiyama.slock.generated.Paths
+import dev.ishiyama.slock.generated.Schemas
 import dev.ishiyama.slock.petstore.configurePetStoreRouting
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -27,7 +27,7 @@ fun Application.configureRouting() {
             call.respondText("Hello, World!")
         }
         post<Paths.CreateChannel> { params ->
-            val body = call.receive<Models.CreateChannelRequest>()
+            val body = call.receive<Schemas.CreateChannelRequest>()
             val created =
                 transactionManager.start {
                     channelRepository.create(
@@ -40,9 +40,9 @@ fun Application.configureRouting() {
                 }
             call.respond(
                 HttpStatusCode.Created,
-                Models.CreateChannelResponse(
+                Schemas.CreateChannelResponse(
                     channel =
-                        Models.Channel(
+                        Schemas.Channel(
                             id = created.id,
                             name = created.title,
                             description = created.description,
@@ -54,10 +54,10 @@ fun Application.configureRouting() {
         get<Paths.ListChannels> {
             val channels = transactionManager.start { channelRepository.list() }
             call.respond(
-                Models.ListChannelsResponse(
+                Schemas.ListChannelsResponse(
                     items =
                         channels.map {
-                            Models.Channel(
+                            Schemas.Channel(
                                 id = it.id,
                                 name = it.title,
                                 description = it.description,

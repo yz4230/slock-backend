@@ -42,6 +42,13 @@ dependencies {
     implementation(libs.postgresql)
 }
 
+kotlin {
+    compilerOptions {
+        // @see https://kotlinlang.org/docs/type-aliases.html
+        freeCompilerArgs.add("-Xnested-type-aliases")
+    }
+}
+
 tasks.register<JavaExec>("generateCode") {
     group = "build"
     description = "Generates source code from an OpenAPI schema."

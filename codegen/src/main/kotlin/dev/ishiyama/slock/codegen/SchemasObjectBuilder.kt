@@ -4,9 +4,9 @@ import com.squareup.kotlinpoet.TypeSpec
 import io.swagger.v3.oas.models.OpenAPI
 import kotlin.collections.iterator
 
-class ModelsObjectBuilder(
+class SchemasObjectBuilder(
     val openAPI: OpenAPI,
-    val objectName: String = "Models",
+    val objectName: String = "Schemas",
 ) {
     fun build(): TypeSpec {
         val dataclasses = mutableListOf<TypeSpec>()
