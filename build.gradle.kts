@@ -8,7 +8,7 @@ group = "dev.ishiyama"
 version = "0.0.1"
 
 application {
-    mainClass = "io.ktor.server.netty.EngineMain"
+    mainClass = "dev.ishiyama.slock.ApplicationKt"
 }
 
 repositories {
@@ -16,8 +16,6 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.slf4j.simple)
-
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
@@ -40,6 +38,7 @@ dependencies {
     implementation(libs.exposed.kotlin.datetime)
 
     implementation(libs.postgresql)
+    implementation(libs.dotenv.kotlin)
 }
 
 kotlin {

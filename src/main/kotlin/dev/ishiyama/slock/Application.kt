@@ -9,6 +9,7 @@ import dev.ishiyama.slock.core.repository.TransactionManager
 import dev.ishiyama.slock.core.repository.TransactionManagerImpl
 import dev.ishiyama.slock.petstore.PetsTable
 import dev.ishiyama.slock.petstore.petStoreModule
+import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -18,6 +19,7 @@ import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.request.httpMethod
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respond
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -33,13 +35,22 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
 
+object Config {
+    private val dotenv by lazy { dotenv { ignoreIfMissing = true } }
+
+    val databaseUrl: String by lazy { mustGet("DATABASE_URL") }
+    val databaseUser: String by lazy { mustGet("DATABASE_USER") }
+    val databasePassword: String by lazy { mustGet("DATABASE_PASSWORD") }
+
+    private fun mustGet(key: String): String = dotenv[key] ?: throw IllegalStateException("Environment variable $key is not set")
+}
+
 fun main(args: Array<String>) {
     println("こんにちは、世界！")
     Database.connect(
-        "jdbc:postgresql://localhost:5432/slock",
-        driver = "org.postgresql.Driver",
-        user = "postgres",
-        password = "password",
+        url = Config.databaseUrl,
+        user = Config.databaseUser,
+        password = Config.databasePassword,
     )
     transaction {
         SchemaUtils.create(PetsTable)
@@ -83,7 +94,15 @@ fun Application.module() {
         modules(petStoreModule)
         modules(slockModule)
     }
-    install(CallLogging) { level = Level.DEBUG }
+    install(CallLogging) {
+        level = Level.INFO
+        format { call ->
+            val status = call.response.status()
+            val httpMethod = call.request.httpMethod.value
+            val userAgent = call.request.headers["User-Agent"]
+            "Status: $status, HTTP method: $httpMethod, User agent: $userAgent"
+        }
+    }
     install(Resources)
     install(StatusPages) {
         exception<BadRequestException> { call, cause ->

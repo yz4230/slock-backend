@@ -27,6 +27,7 @@ exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "e
 exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed-version" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql-version" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.17" }
+dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version = "6.5.1" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
