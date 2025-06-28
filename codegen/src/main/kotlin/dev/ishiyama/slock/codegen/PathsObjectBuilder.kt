@@ -1,17 +1,44 @@
 package dev.ishiyama.slock.codegen
 
+import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.DOUBLE
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.NOTHING
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STRING
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.media.Schema
 import kotlin.collections.iterator
 
 class PathsObjectBuilder(
     val openAPI: OpenAPI,
     val objectName: String = "Paths",
 ) {
+    fun getParameterType(schema: Schema<*>): TypeName {
+        val typeStr = schema.type ?: schema.types?.firstOrNull()
+        return when (typeStr) {
+            "null" -> NOTHING
+            "boolean" -> BOOLEAN
+            "number" -> DOUBLE
+            "string" -> STRING
+            "integer" -> INT
+            "array" -> {
+                val itemType = schema.items?.let { getParameterType(it) } ?: ANY
+                LIST.parameterizedBy(itemType)
+            }
+
+            else -> ANY
+        }
+    }
+
     fun build(): TypeSpec {
         // ktor resource
         val resource = ClassName("io.ktor.resources", "Resource")
@@ -42,26 +69,26 @@ class PathsObjectBuilder(
                                 .build(),
                         )
 
-                for (param in operation.parameters.orEmpty()) {
-                    val paramName = param.name ?: continue
-                    var paramType = SchemaBuilder(openAPI).getTypeName(param.schema ?: continue)
-                    if (!param.required) {
-                        paramType = paramType.copy(nullable = true)
+                operation.parameters?.let {
+                    for (param in it) {
+                        val paramName = param.name ?: continue
+                        val paramType =
+                            run {
+                                val type: TypeName = getParameterType(param.schema)
+                                if (param.required) type else type.copy(nullable = true)
+                            }
+                        clazz.addProperty(
+                            PropertySpec
+                                .builder(paramName, paramType)
+                                .initializer(paramName)
+                                .build(),
+                        )
+                        ctor.addParameter(paramName, paramType)
                     }
-                    clazz.addProperty(
-                        PropertySpec
-                            .builder(paramName, paramType)
-                            .initializer(paramName)
-                            .build(),
-                    )
-                    ctor.addParameter(paramName, paramType)
+                    clazz.primaryConstructor(ctor.build())
                 }
 
-                dataclasses.add(
-                    clazz
-                        .primaryConstructor(ctor.build())
-                        .build(),
-                )
+                dataclasses.add(clazz.build())
             }
         }
 
