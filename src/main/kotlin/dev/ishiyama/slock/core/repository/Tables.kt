@@ -24,9 +24,9 @@ object Tables {
 
     object Channels : Table("channels") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
-        val title = varchar("title", 64)
+        val name = varchar("name", 64)
         val description = varchar("description", 1024)
-        val isDm = bool("is_dm").default(false)
+        val isDirect = bool("is_direct").default(false)
 
         override val primaryKey = PrimaryKey(id)
     }

@@ -1,6 +1,5 @@
 package dev.ishiyama.slock.core.repository
 
-import dev.ishiyama.slock.core.repository.Tables
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
@@ -12,15 +11,15 @@ class ChannelRepositoryImpl : ChannelRepository {
     override fun create(channel: ChannelRepository.CreateChannel): ChannelRepository.ReadChannel =
         Tables.Channels
             .insert {
-                it[title] = channel.title
+                it[name] = channel.name
                 it[description] = channel.description
-                it[isDm] = channel.isDm
+                it[isDirect] = channel.isDirect
             }.let {
                 ChannelRepository.ReadChannel(
                     id = it[Tables.Channels.id].toString(),
-                    title = channel.title,
+                    name = channel.name,
                     description = channel.description,
-                    isDm = channel.isDm,
+                    isDirect = channel.isDirect,
                 )
             }
 
@@ -31,9 +30,9 @@ class ChannelRepositoryImpl : ChannelRepository {
             .map {
                 ChannelRepository.ReadChannel(
                     id = it[Tables.Channels.id].toString(),
-                    title = it[Tables.Channels.title],
+                    name = it[Tables.Channels.name],
                     description = it[Tables.Channels.description],
-                    isDm = it[Tables.Channels.isDm],
+                    isDirect = it[Tables.Channels.isDirect],
                 )
             }.singleOrNull()
 
@@ -43,9 +42,9 @@ class ChannelRepositoryImpl : ChannelRepository {
             .map {
                 ChannelRepository.ReadChannel(
                     id = it[Tables.Channels.id].toString(),
-                    title = it[Tables.Channels.title],
+                    name = it[Tables.Channels.name],
                     description = it[Tables.Channels.description],
-                    isDm = it[Tables.Channels.isDm],
+                    isDirect = it[Tables.Channels.isDirect],
                 )
             }
 
@@ -55,9 +54,9 @@ class ChannelRepositoryImpl : ChannelRepository {
     ): ChannelRepository.ReadChannel? {
         val updatedRows =
             Tables.Channels.update({ Tables.Channels.id eq UUID.fromString(id) }) {
-                update.title?.let { value -> it[title] = value }
+                update.name?.let { value -> it[name] = value }
                 update.description?.let { value -> it[description] = value }
-                update.isDm?.let { value -> it[isDm] = value }
+                update.isDirect?.let { value -> it[isDirect] = value }
             }
         return if (updatedRows > 0) {
             get(id)

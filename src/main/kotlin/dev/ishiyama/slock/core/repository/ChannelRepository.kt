@@ -15,21 +15,21 @@ interface ChannelRepository {
     fun delete(id: String): Boolean
 
     data class CreateChannel(
-        val title: String,
+        val name: String,
         val description: String,
-        val isDm: Boolean,
+        val isDirect: Boolean,
     )
 
     data class UpdateChannel(
-        val title: String? = null,
+        val name: String? = null,
         val description: String? = null,
-        val isDm: Boolean? = null,
+        val isDirect: Boolean? = null,
     )
 
     data class ReadChannel(
         val id: String,
-        val title: String,
+        val name: String,
         val description: String,
-        val isDm: Boolean,
+        val isDirect: Boolean,
     )
 }

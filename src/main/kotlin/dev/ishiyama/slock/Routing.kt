@@ -32,9 +32,9 @@ fun Application.configureRouting() {
                 transactionManager.start {
                     channelRepository.create(
                         ChannelRepository.CreateChannel(
-                            title = body.channel.name,
+                            name = body.channel.name,
                             description = body.channel.description,
-                            isDm = body.channel.isDirect,
+                            isDirect = body.channel.isDirect,
                         ),
                     )
                 }
@@ -44,9 +44,9 @@ fun Application.configureRouting() {
                     channel =
                         Schemas.Channel(
                             id = created.id,
-                            name = created.title,
+                            name = created.name,
                             description = created.description,
-                            isDirect = created.isDm,
+                            isDirect = created.isDirect,
                         ),
                 ),
             )
@@ -59,9 +59,9 @@ fun Application.configureRouting() {
                         channels.map {
                             Schemas.Channel(
                                 id = it.id,
-                                name = it.title,
+                                name = it.name,
                                 description = it.description,
-                                isDirect = it.isDm,
+                                isDirect = it.isDirect,
                             )
                         },
                 ),
