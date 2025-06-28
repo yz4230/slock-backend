@@ -36,13 +36,23 @@ import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
 
 object Config {
-    private val dotenv by lazy { dotenv { ignoreIfMissing = true } }
-
     val databaseUrl: String by lazy { mustGet("DATABASE_URL") }
     val databaseUser: String by lazy { mustGet("DATABASE_USER") }
     val databasePassword: String by lazy { mustGet("DATABASE_PASSWORD") }
 
-    private fun mustGet(key: String): String = dotenv[key] ?: throw IllegalStateException("Environment variable $key is not set")
+    private val filenames = listOf(".env.local", ".env")
+    private val dotenv =
+        filenames.map {
+            dotenv {
+                filename = it
+                ignoreIfMissing = true
+            }
+        }
+
+    private fun mustGet(key: String): String {
+        for (env in dotenv) env[key]?.let { return it }
+        throw IllegalStateException("Environment variable $key is not set")
+    }
 }
 
 fun main(args: Array<String>) {
