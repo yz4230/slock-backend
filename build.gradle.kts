@@ -36,6 +36,9 @@ dependencies {
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.kotlin.datetime)
+    implementation(libs.exposed.migration)
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.database.postgresql)
 
     implementation(libs.postgresql)
     implementation(libs.dotenv.kotlin)
@@ -46,6 +49,22 @@ kotlin {
         // @see https://kotlinlang.org/docs/type-aliases.html
         freeCompilerArgs.add("-Xnested-type-aliases")
     }
+}
+
+tasks.register<JavaExec>("generateMigration") {
+    group = "database"
+    description = "Generates a database migration script."
+
+    mainClass.set("dev.ishiyama.slock.scripts.GenerateMigrationKt")
+    classpath = sourceSets.main.get().runtimeClasspath
+}
+
+tasks.register<JavaExec>("migrateDatabase") {
+    group = "database"
+    description = "Migrates the database schema."
+
+    mainClass.set("dev.ishiyama.slock.scripts.MigrateDatabaseKt")
+    classpath = sourceSets.main.get().runtimeClasspath
 }
 
 tasks.register<JavaExec>("generateCode") {

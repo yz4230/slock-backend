@@ -4,12 +4,9 @@ package dev.ishiyama.slock
 
 import dev.ishiyama.slock.core.repository.ChannelRepository
 import dev.ishiyama.slock.core.repository.ChannelRepositoryImpl
-import dev.ishiyama.slock.core.repository.Tables
 import dev.ishiyama.slock.core.repository.TransactionManager
 import dev.ishiyama.slock.core.repository.TransactionManagerImpl
-import dev.ishiyama.slock.petstore.PetsTable
 import dev.ishiyama.slock.petstore.petStoreModule
-import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -26,8 +23,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.jdbc.Database
-import org.jetbrains.exposed.v1.jdbc.SchemaUtils
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -35,38 +30,16 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.Level
 
-object Config {
-    val databaseUrl: String by lazy { mustGet("DATABASE_URL") }
-    val databaseUser: String by lazy { mustGet("DATABASE_USER") }
-    val databasePassword: String by lazy { mustGet("DATABASE_PASSWORD") }
-
-    private val filenames = listOf(".env.local", ".env")
-    private val dotenv =
-        filenames.map {
-            dotenv {
-                filename = it
-                ignoreIfMissing = true
-            }
-        }
-
-    private fun mustGet(key: String): String {
-        for (env in dotenv) env[key]?.let { return it }
-        throw IllegalStateException("Environment variable $key is not set")
-    }
-}
-
-fun main(args: Array<String>) {
-    println("こんにちは、世界！")
+fun connectToDatabase(): Database =
     Database.connect(
         url = Config.databaseUrl,
         user = Config.databaseUser,
         password = Config.databasePassword,
     )
-    transaction {
-        SchemaUtils.create(PetsTable)
-        SchemaUtils.create(*Tables.allTables)
-    }
 
+fun main(args: Array<String>) {
+    println("こんにちは、世界！")
+    connectToDatabase()
     EngineMain.main(args)
 }
 
