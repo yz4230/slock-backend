@@ -42,14 +42,11 @@ fun main(args: Array<String>) {
     EngineMain.main(args)
 }
 
-fun Throwable.flatten(): List<Throwable> {
+fun Throwable.flattenCauses(): List<Throwable> {
     val result = mutableListOf<Throwable>()
     var cause: Throwable? = this
     while (cause != null) {
         result.add(cause)
-        if (cause.cause == cause) {
-            break
-        }
         cause = cause.cause
     }
     return result
@@ -80,17 +77,14 @@ fun Application.module() {
     install(Resources)
     install(StatusPages) {
         exception<BadRequestException> { call, cause ->
-            val missingFieldException =
-                cause
-                    .flatten()
-                    .firstOrNull { MissingFieldException::class.isInstance(it) }
-                    .let { it as? MissingFieldException }
-            if (missingFieldException != null) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    FieldErrorResponse(missingFieldException),
-                )
-                return@exception
+            for (cause in cause.flattenCauses()) {
+                when (cause) {
+                    is MissingFieldException ->
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            FieldErrorResponse(cause),
+                        )
+                }
             }
             throw cause
         }
