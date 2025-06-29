@@ -67,8 +67,8 @@ tasks.register<JavaExec>("migrateDatabase") {
     classpath = sourceSets.main.get().runtimeClasspath
 }
 
-tasks.register<JavaExec>("generateCode") {
-    group = "build"
+tasks.register<JavaExec>("generateOpenApi") {
+    group = "codegen"
     description = "Generates source code from an OpenAPI schema."
 
     val codegen = project(":codegen")

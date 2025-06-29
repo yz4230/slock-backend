@@ -1,0 +1,10 @@
+# https://taskfile.dev
+version: '3'
+tasks:
+  updateSubmodules:
+    cmd: git submodule update --remote --merge
+  generateOpenApi:
+    cmds:
+      - task: updateSubmodules
+      - cd slock-openapi && npm ci && npm run build
+      - ./gradlew generateOpenApi --stacktrace
