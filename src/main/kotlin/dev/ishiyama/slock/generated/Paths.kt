@@ -25,4 +25,7 @@ public object Paths {
 
   @Resource(path = "/me")
   public class Me()
+
+  @Resource(path = "/register")
+  public class Register()
 }

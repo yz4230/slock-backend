@@ -14,6 +14,8 @@ public object Schemas {
     public val name: String,
     public val description: String,
     public val isDirect: Boolean,
+    public val createdAt: String,
+    public val updatedAt: String,
   )
 
   @Serializable
@@ -21,6 +23,8 @@ public object Schemas {
     public val name: String,
     public val description: String,
     public val isDirect: Boolean,
+    public val createdAt: String,
+    public val updatedAt: String,
   )
 
   @Serializable
@@ -64,11 +68,27 @@ public object Schemas {
     public val channelId: String,
     public val threadId: String,
     public val content: String,
+    public val createdAt: String,
+    public val updatedAt: String,
+  )
+
+  @Serializable
+  public data class RegisterRequest(
+    public val name: String,
+    public val email: String,
+    public val password: String,
+  )
+
+  @Serializable
+  public data class RegisterResponse(
+    public val user: User,
+    public val token: String,
   )
 
   @Serializable
   public data class User(
     public val id: String,
     public val name: String,
+    public val email: String,
   )
 }
