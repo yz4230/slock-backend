@@ -15,6 +15,7 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.inject
+import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
 fun Application.configureRouting() {
     configurePetStoreRouting()
@@ -47,6 +48,8 @@ fun Application.configureRouting() {
                             name = created.name,
                             description = created.description,
                             isDirect = created.isDirect,
+                            createdAt = created.createdAt.format(ISO_OFFSET_DATE_TIME),
+                            updatedAt = created.updatedAt.format(ISO_OFFSET_DATE_TIME),
                         ),
                 ),
             )
@@ -62,6 +65,8 @@ fun Application.configureRouting() {
                                 name = it.name,
                                 description = it.description,
                                 isDirect = it.isDirect,
+                                createdAt = it.createdAt.format(ISO_OFFSET_DATE_TIME),
+                                updatedAt = it.updatedAt.format(ISO_OFFSET_DATE_TIME),
                             )
                         },
                 ),

@@ -23,28 +23,26 @@ public object Schemas {
     public val name: String,
     public val description: String,
     public val isDirect: Boolean,
-    public val createdAt: String,
-    public val updatedAt: String,
   )
 
   @Serializable
   public data class CreateChannelRequest(
-    public val channel: CreateChannel,
+    public val channel: Schemas.CreateChannel,
   )
 
   @Serializable
   public data class CreateChannelResponse(
-    public val channel: Channel,
+    public val channel: Schemas.Channel,
   )
 
   @Serializable
   public data class ListChannelsResponse(
-    public val items: List<Channel>,
+    public val items: List<Schemas.Channel>,
   )
 
   @Serializable
   public data class ListMessagesResponse(
-    public val items: List<Message>,
+    public val items: List<Schemas.Message>,
     public val topCursor: String,
     public val bottomCursor: String,
   )
@@ -57,7 +55,7 @@ public object Schemas {
 
   @Serializable
   public data class LoginResponse(
-    public val user: User,
+    public val user: Schemas.User,
     public val token: String,
   )
 
@@ -81,7 +79,7 @@ public object Schemas {
 
   @Serializable
   public data class RegisterResponse(
-    public val user: User,
+    public val user: Schemas.User,
     public val token: String,
   )
 
@@ -90,5 +88,13 @@ public object Schemas {
     public val id: String,
     public val name: String,
     public val email: String,
+    public val createdAt: String,
+    public val updatedAt: String,
+  )
+
+  @Serializable
+  public data class WithTimestamp(
+    public val createdAt: String,
+    public val updatedAt: String,
   )
 }

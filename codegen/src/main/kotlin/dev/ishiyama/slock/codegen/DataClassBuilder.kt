@@ -32,6 +32,40 @@ class DataClassBuilder(
         }
     }
 
+    fun getRefName(ref: String): TypeName? {
+        val parts = ref.split('/')
+        if (parts.getOrNull(0) == "#") {
+            if (parts.getOrNull(1) == "components") {
+                val rest =
+                    parts
+                        .slice(2..parts.lastIndex)
+                        .map { it.replaceFirstChar { c -> c.titlecase() } }
+                return ClassName("", rest)
+            }
+        }
+        return null
+    }
+
+    fun getRefSchema(ref: String): Schema<*>? {
+        val parts = ref.split('/')
+        if (parts.getOrNull(0) == "#") {
+            if (parts.getOrNull(1) == "components") {
+                if (parts.getOrNull(2) == "schemas") {
+                    val refName = parts.getOrNull(3) ?: return null
+                    val schema = openAPI.components?.schemas?.get(refName) ?: return null
+                    return if (schema.`$ref` == null) schema else getRefSchema(schema.`$ref`)
+                }
+            }
+        }
+        return null
+    }
+
+    fun deref(schema: Schema<*>): Schema<*> {
+        if (schema.`$ref` == null) return schema
+        val refSchema = getRefSchema(schema.`$ref`)
+        return deref(checkNotNull(refSchema))
+    }
+
     fun getChildType(
         name: String,
         schema: Schema<*>,
@@ -45,41 +79,44 @@ class DataClassBuilder(
             "integer" -> INT
             "array" -> LIST.parameterizedBy(schema.items?.let { getChildType(name, it) } ?: ANY)
             "object" -> {
-                val name = name.replaceFirstChar { it.titlecase() }
                 val child = DataClassBuilder(openAPI, schema, name).build()
                 children.add(child)
-                return ClassName("", name)
+                return ClassName("", checkNotNull(child.name))
             }
 
             else -> {
-                // Handle other types or fallback to ANY
-                schema.`$ref`?.let {
-                    val refName = it.substringAfterLast('/')
-                    ClassName("", refName)
-                } ?: ANY
+                schema.`$ref`?.let { return getRefName(it) ?: ANY }
+                ANY
             }
         }
     }
 
     fun build(): TypeSpec {
         val serializable = ClassName("kotlinx.serialization", "Serializable")
+        val className = className.replaceFirstChar { it.titlecase() }
         val ctor = FunSpec.constructorBuilder()
-        val clazz = TypeSpec.classBuilder(className)
+        val clazz =
+            TypeSpec
+                .classBuilder(className)
+                .addModifiers(KModifier.DATA)
+                .addAnnotation(serializable)
 
-        clazz
-            .addModifiers(KModifier.DATA)
-            .addAnnotation(serializable)
+        val properties = schema.properties ?: mutableMapOf()
 
-        schema.properties?.let {
-            for ((propName, propSchema) in it) {
+        schema.allOf?.let { allOf ->
+            for (allOfSchema in allOf) {
+                deref(allOfSchema).properties?.let { properties.putAll(it) }
+            }
+        }
+
+        if (properties.isNotEmpty()) {
+            for ((propName, propSchema) in properties) {
                 val type = getChildType(propName, propSchema)
                 val propSpec = PropertySpec.builder(propName, type).initializer(propName).build()
                 clazz.addProperty(propSpec)
                 ctor.addParameter(propName, type)
             }
-            for (child in children) {
-                clazz.addType(child)
-            }
+            for (child in children) clazz.addType(child)
             clazz.primaryConstructor(ctor.build())
         }
 

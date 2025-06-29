@@ -1,6 +1,7 @@
 package dev.ishiyama.slock.core.repository
 
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.v1.datetime.CurrentTimestampWithTimeZone
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -20,6 +21,8 @@ class ChannelRepositoryImpl : ChannelRepository {
                     name = channel.name,
                     description = channel.description,
                     isDirect = channel.isDirect,
+                    createdAt = it[Tables.Channels.createdAt],
+                    updatedAt = it[Tables.Channels.updatedAt],
                 )
             }
 
@@ -33,6 +36,8 @@ class ChannelRepositoryImpl : ChannelRepository {
                     name = it[Tables.Channels.name],
                     description = it[Tables.Channels.description],
                     isDirect = it[Tables.Channels.isDirect],
+                    createdAt = it[Tables.Channels.createdAt],
+                    updatedAt = it[Tables.Channels.updatedAt],
                 )
             }.singleOrNull()
 
@@ -45,6 +50,8 @@ class ChannelRepositoryImpl : ChannelRepository {
                     name = it[Tables.Channels.name],
                     description = it[Tables.Channels.description],
                     isDirect = it[Tables.Channels.isDirect],
+                    createdAt = it[Tables.Channels.createdAt],
+                    updatedAt = it[Tables.Channels.updatedAt],
                 )
             }
 
@@ -57,16 +64,10 @@ class ChannelRepositoryImpl : ChannelRepository {
                 update.name?.let { value -> it[name] = value }
                 update.description?.let { value -> it[description] = value }
                 update.isDirect?.let { value -> it[isDirect] = value }
+                it[updatedAt] = CurrentTimestampWithTimeZone
             }
-        return if (updatedRows > 0) {
-            get(id)
-        } else {
-            null
-        }
+        return if (updatedRows > 0) get(id) else null
     }
 
-    override fun delete(id: String): Boolean =
-        Tables.Channels.deleteWhere {
-            Tables.Channels.id eq UUID.fromString(id)
-        } > 0
+    override fun delete(id: String): Boolean = Tables.Channels.deleteWhere { Tables.Channels.id eq UUID.fromString(id) } > 0
 }

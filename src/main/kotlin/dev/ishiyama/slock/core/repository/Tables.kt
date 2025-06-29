@@ -1,11 +1,23 @@
 package dev.ishiyama.slock.core.repository
 
 import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.datetime.CurrentTimestampWithTimeZone
 import org.jetbrains.exposed.v1.datetime.timestampWithTimeZone
 import java.util.UUID
 
+abstract class WithTimestamp(
+    name: String,
+) : Table(name) {
+    val createdAt =
+        timestampWithTimeZone("created")
+            .defaultExpression(CurrentTimestampWithTimeZone)
+    val updatedAt =
+        timestampWithTimeZone("updated")
+            .defaultExpression(CurrentTimestampWithTimeZone)
+}
+
 object Tables {
-    object Users : Table("users") {
+    object Users : WithTimestamp("users") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val name = varchar("name", 64)
         val password = varchar("password", 72)
@@ -14,7 +26,7 @@ object Tables {
         override val primaryKey = PrimaryKey(id)
     }
 
-    object Sessions : Table("sessions") {
+    object Sessions : WithTimestamp("sessions") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val userId = uuid("user_id").references(Users.id)
         val token = char("token", 16)
@@ -23,7 +35,7 @@ object Tables {
         override val primaryKey = PrimaryKey(id)
     }
 
-    object Channels : Table("channels") {
+    object Channels : WithTimestamp("channels") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val name = varchar("name", 64)
         val description = varchar("description", 1024)
@@ -32,14 +44,14 @@ object Tables {
         override val primaryKey = PrimaryKey(id)
     }
 
-    object Participates : Table("participates") {
+    object Participates : WithTimestamp("participates") {
         val userId = uuid("user_id").references(Users.id)
         val channelId = uuid("channel_id").references(Channels.id)
 
         override val primaryKey = PrimaryKey(userId, channelId)
     }
 
-    object Messages : Table("messages") {
+    object Messages : WithTimestamp("messages") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val userId = uuid("user_id").references(Users.id)
         val channelId = uuid("channel_id").references(Channels.id)
@@ -49,7 +61,7 @@ object Tables {
         override val primaryKey = PrimaryKey(id)
     }
 
-    object Attachments : Table("attachments") {
+    object Attachments : WithTimestamp("attachments") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val messageId = uuid("message_id").references(Messages.id)
         val filename = varchar("filename", 128)
@@ -58,7 +70,7 @@ object Tables {
         override val primaryKey = PrimaryKey(id)
     }
 
-    object Reactions : Table("reactions") {
+    object Reactions : WithTimestamp("reactions") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val messageId = uuid("message_id").references(Messages.id)
         val userId = uuid("user_id").references(Users.id)

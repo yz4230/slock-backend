@@ -17,7 +17,7 @@ fun main() {
         MigrationUtils.generateMigrationScript(
             *Tables.allTables,
             scriptDirectory = Constants.MIGRATIONS_DIR,
-            scriptName = "V2__add_email_to_users",
+            scriptName = "V3__add_timestamps",
         )
     }
 }

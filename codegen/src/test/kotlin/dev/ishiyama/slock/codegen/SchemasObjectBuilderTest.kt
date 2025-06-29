@@ -34,8 +34,8 @@ class SchemasObjectBuilderTest {
         val builder = SchemasObjectBuilder(openAPI)
         val modelsObject = builder.build()
 
-        // check Models.TestSchema.id -> Int
-        assertEquals("Models", modelsObject.name)
+        // check Schemas.TestSchema.id -> Int
+        assertEquals("Schemas", modelsObject.name)
         val spec = modelsObject.typeSpecs.firstOrNull { it.name == "TestSchema" }
         assertNotNull(spec) // Should not be null
         assert(spec.annotations.size == 1) // @Serializable
