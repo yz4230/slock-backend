@@ -16,7 +16,6 @@ import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.request.httpMethod
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respond
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -77,15 +76,7 @@ fun Application.module() {
         modules(petStoreModule)
         modules(slockModule)
     }
-    install(CallLogging) {
-        level = Level.INFO
-        format { call ->
-            val status = call.response.status()
-            val httpMethod = call.request.httpMethod.value
-            val userAgent = call.request.headers["User-Agent"]
-            "Status: $status, HTTP method: $httpMethod, User agent: $userAgent"
-        }
-    }
+    install(CallLogging) { level = Level.INFO }
     install(Resources)
     install(StatusPages) {
         exception<BadRequestException> { call, cause ->
