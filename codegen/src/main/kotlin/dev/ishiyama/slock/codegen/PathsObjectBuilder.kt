@@ -22,7 +22,10 @@ class PathsObjectBuilder(
     val openAPI: OpenAPI,
     val objectName: String = "Paths",
 ) {
-    fun getParameterType(schema: Schema<*>): TypeName {
+    fun getParameterType(
+        name: String,
+        schema: Schema<*>,
+    ): TypeName {
         val typeStr = schema.type ?: schema.types?.firstOrNull()
         return when (typeStr) {
             "null" -> NOTHING
@@ -30,12 +33,12 @@ class PathsObjectBuilder(
             "number" -> DOUBLE
             "string" -> STRING
             "integer" -> INT
-            "array" -> {
-                val itemType = schema.items?.let { getParameterType(it) } ?: ANY
-                LIST.parameterizedBy(itemType)
-            }
+            "array" -> LIST.parameterizedBy(schema.items?.let { getParameterType(name, it) } ?: ANY)
 
-            else -> ANY
+            else -> {
+                schema.`$ref`?.let { return Utils.getRefTypeName(it) ?: ANY }
+                ANY
+            }
         }
     }
 
@@ -74,7 +77,7 @@ class PathsObjectBuilder(
                         val paramName = param.name ?: continue
                         val paramType =
                             run {
-                                val type: TypeName = getParameterType(param.schema)
+                                val type = getParameterType(paramName, param.schema)
                                 if (param.required) type else type.copy(nullable = true)
                             }
                         clazz.addProperty(

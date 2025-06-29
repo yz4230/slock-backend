@@ -32,37 +32,9 @@ class DataClassBuilder(
         }
     }
 
-    fun getRefName(ref: String): TypeName? {
-        val parts = ref.split('/')
-        if (parts.getOrNull(0) == "#") {
-            if (parts.getOrNull(1) == "components") {
-                val rest =
-                    parts
-                        .slice(2..parts.lastIndex)
-                        .map { it.replaceFirstChar { c -> c.titlecase() } }
-                return ClassName("", rest)
-            }
-        }
-        return null
-    }
-
-    fun getRefSchema(ref: String): Schema<*>? {
-        val parts = ref.split('/')
-        if (parts.getOrNull(0) == "#") {
-            if (parts.getOrNull(1) == "components") {
-                if (parts.getOrNull(2) == "schemas") {
-                    val refName = parts.getOrNull(3) ?: return null
-                    val schema = openAPI.components?.schemas?.get(refName) ?: return null
-                    return if (schema.`$ref` == null) schema else getRefSchema(schema.`$ref`)
-                }
-            }
-        }
-        return null
-    }
-
     fun deref(schema: Schema<*>): Schema<*> {
         if (schema.`$ref` == null) return schema
-        val refSchema = getRefSchema(schema.`$ref`)
+        val refSchema = Utils.getRefSchema(openAPI, schema.`$ref`)
         return deref(checkNotNull(refSchema))
     }
 
@@ -85,7 +57,7 @@ class DataClassBuilder(
             }
 
             else -> {
-                schema.`$ref`?.let { return getRefName(it) ?: ANY }
+                schema.`$ref`?.let { return Utils.getRefTypeName(it) ?: ANY }
                 ANY
             }
         }
