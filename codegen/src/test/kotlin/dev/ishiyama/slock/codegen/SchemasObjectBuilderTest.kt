@@ -27,6 +27,7 @@ class SchemasObjectBuilderTest {
                         "type" to Schema<Any>().apply { type = "string" },
                         "age" to Schema<Any>().apply { type = "integer" },
                     )
+                required = listOf("id", "name", "type", "age")
             }
         openAPI.components = Components()
         openAPI.components.schemas = mutableMapOf("TestSchema" to testSchema)
@@ -70,6 +71,7 @@ class SchemasObjectBuilderTest {
                                     }
                             },
                     )
+                required = listOf("items", "items2d")
             }
         openAPI.components = Components()
         openAPI.components.schemas = mutableMapOf("TestSchema" to testSchema)

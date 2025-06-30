@@ -14,7 +14,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class DataClassBuilderTest {
+class TypeSpecConverterTest {
     @Test
     fun testBasic() {
         val openAPI = OpenAPI()
@@ -38,6 +38,7 @@ class DataClassBuilderTest {
                                                     "id" to Schema<Any>().apply { type = "integer" },
                                                     "name" to Schema<Any>().apply { type = "string" },
                                                 )
+                                            required = listOf("id", "name")
                                         }
                                 },
                             "details" to
@@ -48,8 +49,10 @@ class DataClassBuilderTest {
                                             "description" to Schema<Any>().apply { type = "string" },
                                             "count" to Schema<Any>().apply { type = "integer" },
                                         )
+                                    required = listOf("description", "count")
                                 },
                         )
+                    required = listOf("id", "name", "isActive", "tags", "details")
                 }
         // Example object:
         // {
@@ -66,8 +69,7 @@ class DataClassBuilderTest {
         //   }
         // }
         val className = "TestDataClass"
-        val builder = DataClassBuilder(openAPI, schema, className)
-        val typeSpec = builder.build()
+        val typeSpec = TypeSpecConverter(openAPI, schema, className).convert().children.first()
 
         assertEquals(className, typeSpec.name)
         assertEquals(5, typeSpec.propertySpecs.size)
@@ -114,10 +116,13 @@ class DataClassBuilderTest {
                                                             "id" to Schema<Any>().apply { type = "integer" },
                                                             "name" to Schema<Any>().apply { type = "string" },
                                                         )
+                                                    required = listOf("id", "name")
                                                 },
                                         )
+                                    required = listOf("child")
                                 },
                         )
+                    required = listOf("parent")
                 }
         // Example object:
         // {
@@ -132,8 +137,7 @@ class DataClassBuilderTest {
         val className = "NestedDataClass"
         openAPI.components.schemas = mapOf(className to schema)
 
-        val builder = DataClassBuilder(openAPI, schema, className)
-        val typeSpec = builder.build()
+        val typeSpec = TypeSpecConverter(openAPI, schema, className).convert().children.first()
 
         val parent = typeSpec.typeSpecs.firstOrNull { it.name == "Parent" }
         assertNotNull(parent)
@@ -161,6 +165,7 @@ class DataClassBuilderTest {
                                     "property1" to Schema<Any>().apply { type = "string" },
                                     "property2" to Schema<Any>().apply { type = "integer" },
                                 )
+                            required = listOf("property1", "property2")
                         }
                 val schema2 =
                     Schema<Any>()
@@ -171,6 +176,7 @@ class DataClassBuilderTest {
                                     "property3" to Schema<Any>().apply { type = "boolean" },
                                     "property4" to Schema<Any>().apply { type = "number" },
                                 )
+                            required = listOf("property3", "property4")
                         }
                 val schema3 =
                     Schema<Any>()
@@ -184,8 +190,7 @@ class DataClassBuilderTest {
                         }
 
                 openAPI.components.schemas = mapOf("Schema2" to schema2, "Schema3" to schema3)
-                val builder = DataClassBuilder(openAPI, schema3, "Schema3")
-                builder.build()
+                TypeSpecConverter(openAPI, schema3, "Schema3").convert().children.first()
             }
         // Example object:
         // {

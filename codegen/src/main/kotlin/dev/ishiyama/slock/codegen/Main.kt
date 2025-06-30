@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
     println("⚙️ OpenAPI Schema: ${options.schemaFile}")
     println("⚙️ Output directory: ${options.outputDir}")
 
-    val parseOptions = ParseOptions().apply { isResolve = true }
+    val parseOptions = ParseOptions().apply { isResolveFully = true }
     val result = OpenAPIParser().readLocation(options.schemaFile, null, parseOptions)
     val openAPI = result.openAPI
 

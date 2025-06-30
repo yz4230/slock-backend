@@ -6,6 +6,11 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
 
 object Utils {
+    fun String.upperPascal(): String =
+        this
+            .split('_', '-')
+            .joinToString("") { it.replaceFirstChar { c -> c.uppercase() } }
+
     fun getRefTypeName(ref: String): TypeName? {
         val parts = ref.split('/')
         if (parts.getOrNull(0) == "#") {

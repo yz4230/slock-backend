@@ -11,8 +11,8 @@ class SchemasObjectBuilder(
     fun build(): TypeSpec {
         val dataclasses = mutableListOf<TypeSpec>()
         for ((name, schema) in openAPI.components.schemas) {
-            val spec = DataClassBuilder(openAPI, schema, name).build()
-            dataclasses.add(spec)
+            val spec = TypeSpecConverter(openAPI, schema, name).convert()
+            dataclasses.addAll(spec.children)
         }
 
         return TypeSpec
