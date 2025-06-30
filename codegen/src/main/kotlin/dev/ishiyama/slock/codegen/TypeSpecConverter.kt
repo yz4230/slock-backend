@@ -17,6 +17,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import dev.ishiyama.slock.codegen.Utils.toNullable
 import dev.ishiyama.slock.codegen.Utils.upperPascal
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
@@ -66,7 +67,7 @@ class TypeSpecConverter(
             for ((propName, propSchema) in properties) {
                 val result = TypeSpecConverter(openAPI, propSchema, propName).convert()
                 result.children.forEach { clazz.addType(it) }
-                val typeName = if (propName in required) result.typeName else result.typeName.copy(nullable = true)
+                val typeName = if (propName in required) result.typeName else result.typeName.toNullable()
                 clazz.addProperty(PropertySpec.builder(propName, typeName).initializer(propName).build())
                 val paramSpec = ParameterSpec.builder(propName, typeName)
                 result.defaultValue?.let { paramSpec.defaultValue(it) }

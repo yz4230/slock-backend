@@ -11,6 +11,8 @@ object Utils {
             .split('_', '-')
             .joinToString("") { it.replaceFirstChar { c -> c.uppercase() } }
 
+    fun TypeName.toNullable() = this.copy(nullable = true)
+
     fun getRefTypeName(ref: String): TypeName? {
         val parts = ref.split('/')
         if (parts.getOrNull(0) == "#") {
