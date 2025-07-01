@@ -38,12 +38,6 @@ class TypeSpecConverter(
         val defaultValue: CodeBlock? = null,
     )
 
-    fun deref(schema: Schema<*>): Schema<*> {
-        if (schema.`$ref` == null) return schema
-        val refSchema = Utils.getRefSchema(openAPI, schema.`$ref`)
-        return deref(checkNotNull(refSchema))
-    }
-
     fun buildDataClass(
         className: String,
         schema: Schema<*>,
@@ -57,7 +51,7 @@ class TypeSpecConverter(
 
         if (schema.allOf != null) {
             for (allOfSchema in schema.allOf) {
-                val allOfSchema = deref(allOfSchema)
+                val allOfSchema = Utils.deref(openAPI, allOfSchema)
                 allOfSchema.properties?.let { properties.putAll(it) }
                 allOfSchema.required?.let { required.addAll(it) }
             }

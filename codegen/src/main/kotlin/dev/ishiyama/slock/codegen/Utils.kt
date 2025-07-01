@@ -43,4 +43,13 @@ object Utils {
         }
         return null
     }
+
+    fun deref(
+        openAPI: OpenAPI,
+        schema: Schema<*>,
+    ): Schema<*> {
+        if (schema.`$ref` == null) return schema
+        val refSchema = getRefSchema(openAPI, schema.`$ref`)
+        return deref(openAPI, checkNotNull(refSchema))
+    }
 }
