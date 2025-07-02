@@ -2,6 +2,7 @@ package dev.ishiyama.slock
 
 import dev.ishiyama.slock.core.repository.ChannelRepository
 import dev.ishiyama.slock.core.repository.TransactionManager
+import dev.ishiyama.slock.core.usecase.ListChannelsUseCase
 import dev.ishiyama.slock.generated.Paths
 import dev.ishiyama.slock.generated.Schemas
 import dev.ishiyama.slock.petstore.configurePetStoreRouting
@@ -15,13 +16,13 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.inject
-import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
 fun Application.configureRouting() {
     configurePetStoreRouting()
 
     val transactionManager by inject<TransactionManager>()
     val channelRepository by inject<ChannelRepository>()
+    val listChannelsUseCase by inject<ListChannelsUseCase>()
 
     routing {
         get("/") {
@@ -48,25 +49,25 @@ fun Application.configureRouting() {
                             name = created.name,
                             description = created.description,
                             isDirect = created.isDirect,
-                            createdAt = created.createdAt.format(ISO_OFFSET_DATE_TIME),
-                            updatedAt = created.updatedAt.format(ISO_OFFSET_DATE_TIME),
+                            createdAt = created.createdAt.toString(),
+                            updatedAt = created.updatedAt.toString(),
                         ),
                 ),
             )
         }
         get<Paths.ListChannels> {
-            val channels = transactionManager.start { channelRepository.list() }
+            val output = listChannelsUseCase.execute()
             call.respond(
                 Schemas.ListChannelsResponse(
                     items =
-                        channels.map {
+                        output.channels.map {
                             Schemas.Channel(
                                 id = it.id,
                                 name = it.name,
                                 description = it.description,
                                 isDirect = it.isDirect,
-                                createdAt = it.createdAt.format(ISO_OFFSET_DATE_TIME),
-                                updatedAt = it.updatedAt.format(ISO_OFFSET_DATE_TIME),
+                                createdAt = it.createdAt.toString(),
+                                updatedAt = it.updatedAt.toString(),
                             )
                         },
                 ),

@@ -6,6 +6,8 @@ import dev.ishiyama.slock.core.repository.ChannelRepository
 import dev.ishiyama.slock.core.repository.ChannelRepositoryImpl
 import dev.ishiyama.slock.core.repository.TransactionManager
 import dev.ishiyama.slock.core.repository.TransactionManagerImpl
+import dev.ishiyama.slock.core.usecase.ListChannelsUseCase
+import dev.ishiyama.slock.core.usecase.ListChannelsUseCaseImpl
 import dev.ishiyama.slock.petstore.petStoreModule
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
@@ -57,6 +59,7 @@ fun Application.module() {
         module {
             singleOf(::TransactionManagerImpl) { bind<TransactionManager>() }
             singleOf(::ChannelRepositoryImpl) { bind<ChannelRepository>() }
+            singleOf(::ListChannelsUseCaseImpl) { bind<ListChannelsUseCase>() }
         }
 
     install(ContentNegotiation) {

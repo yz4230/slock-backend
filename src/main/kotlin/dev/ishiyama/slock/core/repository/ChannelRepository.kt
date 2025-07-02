@@ -1,6 +1,6 @@
 package dev.ishiyama.slock.core.repository
 
-import java.time.OffsetDateTime
+import kotlinx.datetime.Instant
 
 interface ChannelRepository {
     fun create(channel: CreateChannel): ReadChannel
@@ -33,7 +33,7 @@ interface ChannelRepository {
         val name: String,
         val description: String,
         val isDirect: Boolean,
-        val createdAt: OffsetDateTime,
-        val updatedAt: OffsetDateTime,
+        val createdAt: Instant,
+        val updatedAt: Instant,
     )
 }
