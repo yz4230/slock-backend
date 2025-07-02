@@ -1,1 +1,0 @@
-ALTER TABLE users ADD email VARCHAR(128) NOT NULL;
