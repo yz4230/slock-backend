@@ -2,6 +2,8 @@
 
 package dev.ishiyama.slock
 
+import dev.ishiyama.slock.core.logic.SessionLogic
+import dev.ishiyama.slock.core.logic.SessionLogicImpl
 import dev.ishiyama.slock.core.repository.ChannelRepository
 import dev.ishiyama.slock.core.repository.ChannelRepositoryImpl
 import dev.ishiyama.slock.core.repository.SessionRepository
@@ -63,17 +65,6 @@ fun Throwable.flattenCauses(): List<Throwable> {
 }
 
 fun Application.module() {
-    val slockModule =
-        module {
-            singleOf(::TransactionManagerImpl) { bind<TransactionManager>() }
-            singleOf(::ChannelRepositoryImpl) { bind<ChannelRepository>() }
-            singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
-            singleOf(::SessionRepositoryImpl) { bind<SessionRepository>() }
-            singleOf(::ListChannelsUseCaseImpl) { bind<ListChannelsUseCase>() }
-            singleOf(::RegisterUserUseCaseImpl) { bind<RegisterUserUseCase>() }
-            singleOf(::UserBySessionUseCaseImpl) { bind<UserBySessionUseCase>() }
-        }
-
     install(ContentNegotiation) {
         json(
             Json {
@@ -86,7 +77,21 @@ fun Application.module() {
     install(Koin) {
         slf4jLogger()
         modules(petStoreModule)
-        modules(slockModule)
+        modules(
+            module {
+                singleOf(::TransactionManagerImpl) { bind<TransactionManager>() }
+
+                singleOf(::ChannelRepositoryImpl) { bind<ChannelRepository>() }
+                singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+                singleOf(::SessionRepositoryImpl) { bind<SessionRepository>() }
+
+                singleOf(::ListChannelsUseCaseImpl) { bind<ListChannelsUseCase>() }
+                singleOf(::RegisterUserUseCaseImpl) { bind<RegisterUserUseCase>() }
+                singleOf(::UserBySessionUseCaseImpl) { bind<UserBySessionUseCase>() }
+
+                singleOf(::SessionLogicImpl) { bind<SessionLogic>() }
+            },
+        )
     }
     install(CallLogging) { level = Level.INFO }
     install(Resources)
