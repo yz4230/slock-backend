@@ -7,6 +7,11 @@ interface SessionRepository {
 
     fun get(id: String): ReadSession?
 
+    fun update(
+        id: String,
+        update: UpdateSession,
+    ): ReadSession?
+
     fun delete(id: String): Boolean
 
     data class CreateSession(
@@ -20,5 +25,9 @@ interface SessionRepository {
         val expiresAt: Instant,
         val createdAt: Instant,
         val updatedAt: Instant,
+    )
+
+    data class UpdateSession(
+        val expiresAt: Instant? = null,
     )
 }

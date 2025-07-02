@@ -37,10 +37,10 @@ class UserRepositoryImpl : UserRepository {
                 )
             }.singleOrNull()
 
-    override fun getByName(name: String): UserRepository.ReadUser? =
+    override fun getByEmail(email: String): UserRepository.ReadUser? =
         Tables.Users
             .selectAll()
-            .where { Tables.Users.name eq name }
+            .where { Tables.Users.email eq email }
             .map {
                 UserRepository.ReadUser(
                     id = it[Tables.Users.id].toString(),
@@ -49,7 +49,7 @@ class UserRepositoryImpl : UserRepository {
                     createdAt = it[Tables.Users.createdAt],
                     updatedAt = it[Tables.Users.updatedAt],
                 )
-            }.singleOrNull()
+            }.firstOrNull()
 
     override fun getPassword(id: String): String? =
         Tables.Users

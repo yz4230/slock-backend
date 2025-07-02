@@ -7,7 +7,7 @@ interface UserRepository {
 
     fun get(id: String): ReadUser?
 
-    fun getByName(name: String): ReadUser?
+    fun getByEmail(email: String): ReadUser?
 
     fun getPassword(id: String): String?
 

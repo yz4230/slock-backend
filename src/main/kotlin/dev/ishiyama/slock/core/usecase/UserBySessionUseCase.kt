@@ -2,18 +2,16 @@ package dev.ishiyama.slock.core.usecase
 
 import kotlinx.datetime.Instant
 
-interface RegisterUserUseCase {
+interface UserBySessionUseCase {
     fun execute(input: Input): Output
 
     data class Input(
-        val name: String,
-        val email: String,
-        val password: String,
+        val sessionId: String,
+        val shouldRefreshExpiresAt: Boolean = true,
     )
 
     data class Output(
-        val user: User,
-        val sessionId: String,
+        val user: User?,
     ) {
         data class User(
             val id: String,

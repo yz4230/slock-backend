@@ -3,6 +3,8 @@ package dev.ishiyama.slock
 import dev.ishiyama.slock.core.repository.ChannelRepository
 import dev.ishiyama.slock.core.repository.TransactionManager
 import dev.ishiyama.slock.core.usecase.ListChannelsUseCase
+import dev.ishiyama.slock.core.usecase.RegisterUserUseCase
+import dev.ishiyama.slock.core.usecase.UserBySessionUseCase
 import dev.ishiyama.slock.generated.Paths
 import dev.ishiyama.slock.generated.Schemas
 import dev.ishiyama.slock.petstore.configurePetStoreRouting
@@ -16,13 +18,13 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.inject
+import kotlin.getValue
 
 fun Application.configureRouting() {
     configurePetStoreRouting()
 
     val transactionManager by inject<TransactionManager>()
     val channelRepository by inject<ChannelRepository>()
-    val listChannelsUseCase by inject<ListChannelsUseCase>()
 
     routing {
         get("/") {
@@ -56,7 +58,8 @@ fun Application.configureRouting() {
             )
         }
         get<Paths.ListChannels> {
-            val output = listChannelsUseCase.execute()
+            val useCase by inject<ListChannelsUseCase>()
+            val output = useCase.execute()
             call.respond(
                 Schemas.ListChannelsResponse(
                     items =
@@ -78,9 +81,63 @@ fun Application.configureRouting() {
                 "List messages for channel: ${params.channelId}, thread: ${params.threadId ?: "none"}",
             )
         }
+        post<Paths.Register> {
+            val body = call.receive<Schemas.RegisterRequest>()
+            val useCase by inject<RegisterUserUseCase>()
+            val output =
+                useCase.execute(
+                    RegisterUserUseCase.Input(
+                        name = body.name,
+                        email = body.email,
+                        password = body.password,
+                    ),
+                )
+            call.respond(
+                HttpStatusCode.Created,
+                Schemas.RegisterResponse(
+                    user =
+                        Schemas.User(
+                            id = output.user.id,
+                            name = output.user.name,
+                            email = output.user.email,
+                            createdAt = output.user.createdAt.toString(),
+                            updatedAt = output.user.updatedAt.toString(),
+                        ),
+                    token = output.sessionId,
+                ),
+            )
+        }
         post<Paths.Login> {
         }
         get<Paths.Me> {
+            val useCase by inject<UserBySessionUseCase>()
+            val sessionId = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+
+            if (sessionId.isNullOrBlank()) {
+                call.respond(HttpStatusCode.Unauthorized, "Missing or invalid token")
+                return@get
+            }
+
+            val output =
+                useCase.execute(
+                    UserBySessionUseCase.Input(
+                        sessionId = sessionId,
+                    ),
+                )
+
+            if (output.user == null) {
+                call.respond(HttpStatusCode.Unauthorized, "Invalid session")
+            } else {
+                call.respond(
+                    Schemas.User(
+                        id = output.user.id,
+                        name = output.user.name,
+                        email = output.user.email,
+                        createdAt = output.user.createdAt.toString(),
+                        updatedAt = output.user.updatedAt.toString(),
+                    ),
+                )
+            }
         }
     }
 }

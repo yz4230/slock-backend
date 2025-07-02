@@ -42,6 +42,7 @@ dependencies {
 
     implementation(libs.postgresql)
     implementation(libs.dotenv.kotlin)
+    implementation(libs.spring.security.crypto)
 }
 
 kotlin {
