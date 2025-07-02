@@ -17,7 +17,7 @@ fun main() {
         MigrationUtils.generateMigrationScript(
             *Tables.allTables,
             scriptDirectory = Constants.MIGRATIONS_DIR,
-            scriptName = "V3__add_timestamps",
+            scriptName = "V4__remove_timestamp_zones",
         )
     }
 }

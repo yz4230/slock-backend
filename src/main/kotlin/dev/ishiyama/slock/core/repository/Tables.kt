@@ -1,19 +1,16 @@
 package dev.ishiyama.slock.core.repository
 
 import org.jetbrains.exposed.v1.core.Table
-import org.jetbrains.exposed.v1.datetime.CurrentTimestampWithTimeZone
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
+import org.jetbrains.exposed.v1.datetime.timestamp
 import org.jetbrains.exposed.v1.datetime.timestampWithTimeZone
 import java.util.UUID
 
 abstract class WithTimestamp(
     name: String,
 ) : Table(name) {
-    val createdAt =
-        timestampWithTimeZone("created")
-            .defaultExpression(CurrentTimestampWithTimeZone)
-    val updatedAt =
-        timestampWithTimeZone("updated")
-            .defaultExpression(CurrentTimestampWithTimeZone)
+    val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp)
+    val updatedAt = timestamp("updated_at").defaultExpression(CurrentTimestamp)
 }
 
 object Tables {

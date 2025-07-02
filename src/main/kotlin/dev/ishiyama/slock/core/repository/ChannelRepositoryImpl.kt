@@ -1,7 +1,7 @@
 package dev.ishiyama.slock.core.repository
 
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.v1.datetime.CurrentTimestampWithTimeZone
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -64,7 +64,7 @@ class ChannelRepositoryImpl : ChannelRepository {
                 update.name?.let { value -> it[name] = value }
                 update.description?.let { value -> it[description] = value }
                 update.isDirect?.let { value -> it[isDirect] = value }
-                it[updatedAt] = CurrentTimestampWithTimeZone
+                it[updatedAt] = CurrentTimestamp
             }
         return if (updatedRows > 0) get(id) else null
     }
