@@ -16,7 +16,7 @@ object Tables {
     object Users : WithTimestamp("users") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val name = varchar("name", 64)
-        val password = varchar("password", 72)
+        val password = varchar("password", 60)
         val email = varchar("email", 128)
 
         override val primaryKey = PrimaryKey(id)
