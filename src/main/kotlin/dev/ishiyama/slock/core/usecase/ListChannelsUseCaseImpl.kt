@@ -1,7 +1,7 @@
 package dev.ishiyama.slock.core.usecase
 
 import dev.ishiyama.slock.core.repository.ChannelRepository
-import dev.ishiyama.slock.core.repository.TransactionManager
+import dev.ishiyama.slock.core.repository.transaction.TransactionManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

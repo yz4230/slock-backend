@@ -1,7 +1,7 @@
 package dev.ishiyama.slock
 
 import dev.ishiyama.slock.core.repository.ChannelRepository
-import dev.ishiyama.slock.core.repository.TransactionManager
+import dev.ishiyama.slock.core.repository.transaction.TransactionManager
 import dev.ishiyama.slock.core.usecase.ListChannelsUseCase
 import dev.ishiyama.slock.core.usecase.RegisterUserUseCase
 import dev.ishiyama.slock.core.usecase.UserBySessionUseCase

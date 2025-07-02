@@ -1,8 +1,8 @@
 package dev.ishiyama.slock.core.usecase
 
 import dev.ishiyama.slock.core.repository.SessionRepository
-import dev.ishiyama.slock.core.repository.TransactionManager
 import dev.ishiyama.slock.core.repository.UserRepository
+import dev.ishiyama.slock.core.repository.transaction.TransactionManager
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

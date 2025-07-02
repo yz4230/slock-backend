@@ -6,10 +6,10 @@ import dev.ishiyama.slock.core.repository.ChannelRepository
 import dev.ishiyama.slock.core.repository.ChannelRepositoryImpl
 import dev.ishiyama.slock.core.repository.SessionRepository
 import dev.ishiyama.slock.core.repository.SessionRepositoryImpl
-import dev.ishiyama.slock.core.repository.TransactionManager
-import dev.ishiyama.slock.core.repository.TransactionManagerImpl
 import dev.ishiyama.slock.core.repository.UserRepository
 import dev.ishiyama.slock.core.repository.UserRepositoryImpl
+import dev.ishiyama.slock.core.repository.transaction.TransactionManager
+import dev.ishiyama.slock.core.repository.transaction.TransactionManagerImpl
 import dev.ishiyama.slock.core.usecase.ListChannelsUseCase
 import dev.ishiyama.slock.core.usecase.ListChannelsUseCaseImpl
 import dev.ishiyama.slock.core.usecase.RegisterUserUseCase
