@@ -1,6 +1,7 @@
 package dev.ishiyama.slock.core.repository
 
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -44,6 +45,7 @@ class SessionRepositoryImpl : SessionRepository {
         val updatedRows =
             Tables.Sessions.update({ Tables.Sessions.id eq UUID.fromString(id) }) {
                 update.expiresAt?.let { value -> it[expiresAt] = value }
+                it[updatedAt] = CurrentTimestamp
             }
         return if (updatedRows > 0) get(id) else null
     }

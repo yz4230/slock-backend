@@ -1,5 +1,6 @@
 package dev.ishiyama.slock.core.repository
 
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -67,6 +68,7 @@ class UserRepositoryImpl : UserRepository {
                 update.name?.let { value -> it[name] = value }
                 update.email?.let { value -> it[email] = value }
                 update.password?.let { value -> it[password] = value }
+                it[updatedAt] = CurrentTimestamp
             }
 
         return if (updatedRows > 0) get(id) else null
