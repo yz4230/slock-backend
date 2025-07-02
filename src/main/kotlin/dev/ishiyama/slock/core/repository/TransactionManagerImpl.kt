@@ -1,6 +1,8 @@
 package dev.ishiyama.slock.core.repository
 
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
+import org.jetbrains.exposed.v1.jdbc.addLogger
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 class TransactionContextImpl(
@@ -12,5 +14,9 @@ class TransactionContextImpl(
 }
 
 class TransactionManagerImpl : TransactionManager {
-    override fun <T> start(block: TransactionContext.() -> T): T = transaction { block(TransactionContextImpl(this)) }
+    override fun <T> start(block: TransactionContext.() -> T): T =
+        transaction {
+            addLogger(StdOutSqlLogger)
+            block(TransactionContextImpl(this))
+        }
 }
