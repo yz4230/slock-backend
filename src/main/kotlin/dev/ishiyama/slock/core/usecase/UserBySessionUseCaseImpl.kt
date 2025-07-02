@@ -23,15 +23,15 @@ class UserBySessionUseCaseImpl :
     override fun execute(input: UserBySessionUseCase.Input): UserBySessionUseCase.Output =
         transactionManager.start {
             val session = sessionRepository.get(input.sessionId)
+
             if (session == null) return@start UserBySessionUseCase.Output(user = null)
-
-            val user = userRepository.get(session.userId)
-            checkNotNull(user)
-
             if (session.expiresAt < Clock.System.now()) {
                 sessionRepository.delete(input.sessionId)
                 return@start UserBySessionUseCase.Output(user = null)
             }
+
+            val user = userRepository.get(session.userId)
+            checkNotNull(user)
 
             if (input.shouldRefreshExpiresAt) {
                 val newExpiresAt = Clock.System.now() + SESSION_EXPIRATION_DAYS.toDuration(DurationUnit.DAYS)
