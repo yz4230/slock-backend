@@ -3,7 +3,6 @@ package dev.ishiyama.slock.core.repository
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
 import org.jetbrains.exposed.v1.datetime.timestamp
-import org.jetbrains.exposed.v1.datetime.timestampWithTimeZone
 import java.util.UUID
 
 abstract class WithTimestamp(
@@ -26,8 +25,7 @@ object Tables {
     object Sessions : WithTimestamp("sessions") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val userId = uuid("user_id").references(Users.id)
-        val token = char("token", 16)
-        val expiresAt = timestampWithTimeZone("expires_at")
+        val expiresAt = timestamp("expires_at")
 
         override val primaryKey = PrimaryKey(id)
     }
