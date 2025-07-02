@@ -11,6 +11,8 @@ interface UserRepository {
 
     fun getPassword(id: String): String?
 
+    fun getPasswordByEmail(email: String): String?
+
     fun update(
         id: String,
         update: UpdateUser,

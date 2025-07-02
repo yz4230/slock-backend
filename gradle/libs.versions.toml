@@ -12,8 +12,6 @@ ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "kto
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor-version" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-version" }
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
-ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
 koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin-version" }
 koin-logger-slf4j = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin-version" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-version" }
@@ -33,6 +31,8 @@ postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql-v
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.17" }
 dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version = "6.5.1" }
 spring-security-crypto = { module = "org.springframework.security:spring-security-crypto", version = "6.5.1" }
+
+koin-test-junit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin-version" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }

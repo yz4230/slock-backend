@@ -59,6 +59,13 @@ class UserRepositoryImpl : UserRepository {
             .map { it[Tables.Users.password] }
             .singleOrNull()
 
+    override fun getPasswordByEmail(email: String): String? =
+        Tables.Users
+            .select(Tables.Users.password)
+            .where { Tables.Users.email eq email }
+            .map { it[Tables.Users.password] }
+            .singleOrNull()
+
     override fun update(
         id: String,
         update: UserRepository.UpdateUser,

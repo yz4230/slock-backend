@@ -14,6 +14,8 @@ import dev.ishiyama.slock.core.repository.transaction.TransactionManager
 import dev.ishiyama.slock.core.repository.transaction.TransactionManagerImpl
 import dev.ishiyama.slock.core.usecase.ListChannelsUseCase
 import dev.ishiyama.slock.core.usecase.ListChannelsUseCaseImpl
+import dev.ishiyama.slock.core.usecase.LoginUseCase
+import dev.ishiyama.slock.core.usecase.LoginUseCaseImpl
 import dev.ishiyama.slock.core.usecase.RegisterUserUseCase
 import dev.ishiyama.slock.core.usecase.RegisterUserUseCaseImpl
 import dev.ishiyama.slock.core.usecase.UserBySessionUseCase
@@ -88,6 +90,7 @@ fun Application.module() {
                 singleOf(::ListChannelsUseCaseImpl) { bind<ListChannelsUseCase>() }
                 singleOf(::RegisterUserUseCaseImpl) { bind<RegisterUserUseCase>() }
                 singleOf(::UserBySessionUseCaseImpl) { bind<UserBySessionUseCase>() }
+                singleOf(::LoginUseCaseImpl) { bind<LoginUseCase>() }
 
                 singleOf(::SessionLogicImpl) { bind<SessionLogic>() }
             },
