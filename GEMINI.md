@@ -36,6 +36,32 @@ The project is a multi-module Gradle project:
     - **`src/main/resources`**: Application configuration files (`application.yaml`, `logback.xml`).
 - **`migrations/`**: SQL migration files managed by Flyway.
 
+## Database Migrations
+
+This project uses [Flyway](https://flywaydb.org/) to manage database migrations. Migration files are located in the
+`migrations/` directory.
+
+### Creating a new migration
+
+To create a new migration file, run the following command:
+
+```bash
+./gradlew generateMigration --args=<migration_name>
+```
+
+Replace `<migration_name>` with a descriptive name for your migration (e.g., `create_users_table`). This will create a
+new SQL file in the `migrations/` directory with a version number and the specified name.
+
+### Applying migrations
+
+To apply pending migrations to the database, run the following command:
+
+```bash
+./gradlew migrateDatabase
+```
+
+This command will execute any new migration files that have not yet been applied to the database.
+
 ## Common Commands
 
 - **`./gradlew build`**: Compiles the entire project.
