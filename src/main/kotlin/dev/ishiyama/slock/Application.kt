@@ -29,6 +29,7 @@ import io.ktor.server.netty.EngineMain
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respond
@@ -112,6 +113,7 @@ fun Application.module() {
             throw cause
         }
     }
+    install(CORS) { Config.corsAllowedOrigins.forEach { allowHost(it) } }
 
     configureRouting()
 }
