@@ -21,6 +21,7 @@ import dev.ishiyama.slock.core.usecase.RegisterUserUseCaseImpl
 import dev.ishiyama.slock.core.usecase.UserBySessionUseCase
 import dev.ishiyama.slock.core.usecase.UserBySessionUseCaseImpl
 import dev.ishiyama.slock.petstore.petStoreModule
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -113,7 +114,12 @@ fun Application.module() {
             throw cause
         }
     }
-    install(CORS) { Config.corsAllowedOrigins.forEach { allowHost(it) } }
+    install(CORS) {
+        Config.corsAllowedOrigins.forEach { allowHost(it) }
+        anyMethod()
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+    }
 
     configureRouting()
 }
