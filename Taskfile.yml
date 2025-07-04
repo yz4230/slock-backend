@@ -7,4 +7,9 @@ tasks:
     cmds:
       - task: updateSubmodules
       - cd slock-openapi && npm ci && npm run build
-      - ./gradlew generateOpenApi --stacktrace
+      - ./gradlew :generateOpenApi --stacktrace
+  migrateDatabase:
+    cmd: ./gradlew :migrateDatabase --stacktrace
+  run:
+    cmd: ./gradlew :run --console=plain --stacktrace
+    interactive: true
