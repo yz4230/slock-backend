@@ -15,9 +15,10 @@ abstract class WithTimestamp(
 object Tables {
     object Users : WithTimestamp("users") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
-        val name = varchar("name", 64)
-        val password = varchar("password", 60)
+        val name = varchar("name", 128)
+        val displayName = varchar("display_name", 128).nullable()
         val email = varchar("email", 128)
+        val password = varchar("password", 60)
 
         override val primaryKey = PrimaryKey(id)
     }
