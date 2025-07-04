@@ -12,6 +12,7 @@ class UserRepositoryImpl : UserRepository {
         Tables.Users
             .insert {
                 it[name] = user.name
+                it[displayName] = user.displayName
                 it[email] = user.email
                 it[password] = user.password
             }.let {
@@ -76,6 +77,7 @@ class UserRepositoryImpl : UserRepository {
         val updatedRows =
             Tables.Users.update({ Tables.Users.id eq UUID.fromString(id) }) {
                 update.name?.let { value -> it[name] = value }
+                update.displayName?.let { value -> it[displayName] = value }
                 update.email?.let { value -> it[email] = value }
                 update.password?.let { value -> it[password] = value }
                 it[updatedAt] = CurrentTimestamp
