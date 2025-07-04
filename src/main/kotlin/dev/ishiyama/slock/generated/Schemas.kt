@@ -73,6 +73,7 @@ public object Schemas {
   @Serializable
   public data class RegisterRequest(
     public val name: String,
+    public val displayName: String,
     public val email: String,
     public val password: String,
   )
@@ -87,6 +88,7 @@ public object Schemas {
   public data class User(
     public val id: String,
     public val name: String,
+    public val displayName: String,
     public val email: String,
     public val createdAt: String,
     public val updatedAt: String,

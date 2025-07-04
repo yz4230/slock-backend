@@ -20,12 +20,14 @@ interface UserRepository {
 
     data class CreateUser(
         val name: String,
+        val displayName: String,
         val email: String,
         val password: String,
     )
 
     data class UpdateUser(
         val name: String? = null,
+        val displayName: String? = null,
         val email: String? = null,
         val password: String? = null,
     )
@@ -33,6 +35,7 @@ interface UserRepository {
     data class ReadUser(
         val id: String,
         val name: String,
+        val displayName: String,
         val email: String,
         val createdAt: Instant,
         val updatedAt: Instant,

@@ -38,6 +38,7 @@ class RegisterUserUseCaseImpl :
                 userRepository.create(
                     UserRepository.CreateUser(
                         name = input.name,
+                        displayName = input.displayName,
                         email = input.email,
                         password = passwordHashed,
                     ),
@@ -56,6 +57,7 @@ class RegisterUserUseCaseImpl :
                     RegisterUserUseCase.Output.User(
                         id = user.id,
                         name = user.name,
+                        displayName = user.displayName,
                         email = user.email,
                         createdAt = user.createdAt,
                         updatedAt = user.updatedAt,

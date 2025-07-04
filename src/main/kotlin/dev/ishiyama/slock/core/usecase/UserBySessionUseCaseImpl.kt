@@ -41,6 +41,7 @@ class UserBySessionUseCaseImpl :
                     UserBySessionUseCase.Output.User(
                         id = user.id,
                         name = user.name,
+                        displayName = user.displayName,
                         email = user.email,
                         createdAt = user.createdAt,
                         updatedAt = user.updatedAt,

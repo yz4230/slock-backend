@@ -34,6 +34,7 @@ class UserRegistrationFlow : KoinTest {
         }
 
         val name = "johndoe"
+        val displayName = "John Doe"
         val email = "johndoe@example.com"
         val password = "securePassword"
 
@@ -42,7 +43,12 @@ class UserRegistrationFlow : KoinTest {
             run {
                 val usecase: RegisterUserUseCase = RegisterUserUseCaseImpl()
                 val input =
-                    RegisterUserUseCase.Input(name = name, email = email, password = password)
+                    RegisterUserUseCase.Input(
+                        name = name,
+                        displayName = displayName,
+                        email = email,
+                        password = password,
+                    )
                 val output = usecase.execute(input)
                 output.sessionId
             }
@@ -54,6 +60,7 @@ class UserRegistrationFlow : KoinTest {
             val output = usecase.execute(input)
             assertNotNull(output.user)
             assertEquals(name, output.user.name)
+            assertEquals(displayName, output.user.displayName)
             assertEquals(email, output.user.email)
         }
 
@@ -64,6 +71,7 @@ class UserRegistrationFlow : KoinTest {
             val output = usecase.execute(input)
             assertNotNull(output.user)
             assertEquals(name, output.user.name)
+            assertEquals(displayName, output.user.displayName)
             assertEquals(email, output.user.email)
         }
     }

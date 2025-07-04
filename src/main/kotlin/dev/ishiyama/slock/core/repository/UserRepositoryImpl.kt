@@ -18,6 +18,7 @@ class UserRepositoryImpl : UserRepository {
                 UserRepository.ReadUser(
                     id = it[Tables.Users.id].toString(),
                     name = user.name,
+                    displayName = user.displayName,
                     email = user.email,
                     createdAt = it[Tables.Users.createdAt],
                     updatedAt = it[Tables.Users.updatedAt],
@@ -32,6 +33,7 @@ class UserRepositoryImpl : UserRepository {
                 UserRepository.ReadUser(
                     id = it[Tables.Users.id].toString(),
                     name = it[Tables.Users.name],
+                    displayName = it[Tables.Users.displayName],
                     email = it[Tables.Users.email],
                     createdAt = it[Tables.Users.createdAt],
                     updatedAt = it[Tables.Users.updatedAt],
@@ -46,6 +48,7 @@ class UserRepositoryImpl : UserRepository {
                 UserRepository.ReadUser(
                     id = it[Tables.Users.id].toString(),
                     name = it[Tables.Users.name],
+                    displayName = it[Tables.Users.displayName],
                     email = it[Tables.Users.email],
                     createdAt = it[Tables.Users.createdAt],
                     updatedAt = it[Tables.Users.updatedAt],

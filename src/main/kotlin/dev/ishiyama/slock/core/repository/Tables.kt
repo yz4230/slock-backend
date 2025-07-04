@@ -16,7 +16,7 @@ object Tables {
     object Users : WithTimestamp("users") {
         val id = uuid("id").clientDefault { UUID.randomUUID() }
         val name = varchar("name", 128)
-        val displayName = varchar("display_name", 128).nullable()
+        val displayName = varchar("display_name", 128)
         val email = varchar("email", 128)
         val password = varchar("password", 60)
 

@@ -9,6 +9,7 @@ class InMemoryUserRepository : UserRepository {
     data class User(
         val id: String,
         val name: String,
+        val displayName: String,
         val email: String,
         val password: String,
         val createdAt: Instant,
@@ -20,6 +21,7 @@ class InMemoryUserRepository : UserRepository {
             User(
                 id = UUID.randomUUID().toString(),
                 name = user.name,
+                displayName = user.displayName,
                 email = user.email,
                 password = user.password, // In a real implementation, this should be hashed
                 createdAt = Clock.System.now(),
@@ -29,6 +31,7 @@ class InMemoryUserRepository : UserRepository {
         return UserRepository.ReadUser(
             id = newUser.id,
             name = newUser.name,
+            displayName = user.displayName,
             email = newUser.email,
             createdAt = newUser.createdAt,
             updatedAt = newUser.updatedAt,
@@ -40,6 +43,7 @@ class InMemoryUserRepository : UserRepository {
             UserRepository.ReadUser(
                 id = it.id,
                 name = it.name,
+                displayName = it.displayName,
                 email = it.email,
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
@@ -51,6 +55,7 @@ class InMemoryUserRepository : UserRepository {
             UserRepository.ReadUser(
                 id = it.id,
                 name = it.name,
+                displayName = it.displayName,
                 email = it.email,
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
@@ -77,6 +82,7 @@ class InMemoryUserRepository : UserRepository {
         return UserRepository.ReadUser(
             id = updatedUser.id,
             name = updatedUser.name,
+            displayName = updatedUser.displayName,
             email = updatedUser.email,
             createdAt = updatedUser.createdAt,
             updatedAt = updatedUser.updatedAt,

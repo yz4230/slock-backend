@@ -16,6 +16,7 @@ interface UserBySessionUseCase {
         data class User(
             val id: String,
             val name: String,
+            val displayName: String,
             val email: String,
             val createdAt: Instant,
             val updatedAt: Instant,

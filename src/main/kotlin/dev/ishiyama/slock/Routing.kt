@@ -88,6 +88,7 @@ fun Application.configureRouting() {
                 useCase.execute(
                     RegisterUserUseCase.Input(
                         name = body.name,
+                        displayName = body.displayName,
                         email = body.email,
                         password = body.password,
                     ),
@@ -100,6 +101,7 @@ fun Application.configureRouting() {
                             id = output.user.id,
                             name = output.user.name,
                             email = output.user.email,
+                            displayName = output.user.displayName,
                             createdAt = output.user.createdAt.toString(),
                             updatedAt = output.user.updatedAt.toString(),
                         ),
@@ -132,6 +134,7 @@ fun Application.configureRouting() {
                     Schemas.User(
                         id = output.user.id,
                         name = output.user.name,
+                        displayName = output.user.displayName,
                         email = output.user.email,
                         createdAt = output.user.createdAt.toString(),
                         updatedAt = output.user.updatedAt.toString(),
