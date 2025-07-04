@@ -41,26 +41,22 @@ The project is a multi-module Gradle project:
 This project uses [Flyway](https://flywaydb.org/) to manage database migrations. Migration files are located in the
 `migrations/` directory.
 
-### Creating a new migration
+The workflow for updating the database schema is as follows:
 
-To create a new migration file, run the following command:
+1.  **Update Table Definitions:** Modify the table definition code in `src/main/kotlin/dev/ishiyama/slock/core/repository/Tables.kt`.
+2.  **Generate Migration Script:** Run the following command to generate a new migration script:
 
-```bash
-./gradlew generateMigration --args=<migration_name>
-```
+    ```bash
+    ./gradlew generateMigration --args=<migration_name>
+    ```
+    Replace `<migration_name>` with a descriptive name for your migration (e.g., `add_new_column_to_users_table`). This will create a new SQL file in the `migrations/` directory.
 
-Replace `<migration_name>` with a descriptive name for your migration (e.g., `create_users_table`). This will create a
-new SQL file in the `migrations/` directory with a version number and the specified name.
+3.  **Apply Migrations:** Apply the pending migrations to the database by running:
 
-### Applying migrations
-
-To apply pending migrations to the database, run the following command:
-
-```bash
-./gradlew migrateDatabase
-```
-
-This command will execute any new migration files that have not yet been applied to the database.
+    ```bash
+    ./gradlew migrateDatabase
+    ```
+    This command executes any new migration scripts that haven't been applied yet.
 
 ## Common Commands
 
@@ -71,5 +67,3 @@ This command will execute any new migration files that have not yet been applied
     1. Updating git submodules.
     2. Running `npm install` and `npm run build` in the `slock-openapi` directory to generate the `openapi.yaml` file.
     3. Running the `codegen` module to generate Kotlin files from the `openapi.yaml` schema.
-- **`./gradlew generateMigration`**: Creates a new database migration file.
-- **`./gradlew migrateDatabase`**: Applies pending database migrations.
