@@ -2,7 +2,7 @@
 version: '3'
 tasks:
   updateSubmodules:
-    cmd: git submodule update --remote --merge
+    cmd: git submodule update --remote
   generateOpenApi:
     cmds:
       - task: updateSubmodules
