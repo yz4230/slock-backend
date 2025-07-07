@@ -17,8 +17,9 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import dev.ishiyama.slock.codegen.Utils.capitalize
+import dev.ishiyama.slock.codegen.Utils.escapeIdentifier
 import dev.ishiyama.slock.codegen.Utils.toNullable
-import dev.ishiyama.slock.codegen.Utils.upperPascal
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
 
@@ -57,18 +58,24 @@ class TypeSpecConverter(
             }
         }
 
-        if (properties.isNotEmpty()) {
-            for ((propName, propSchema) in properties) {
-                val result = TypeSpecConverter(openAPI, propSchema, propName).convert()
-                result.children.forEach { clazz.addType(it) }
-                val typeName = if (propName in required) result.typeName else result.typeName.toNullable()
-                clazz.addProperty(PropertySpec.builder(propName, typeName).initializer(propName).build())
-                val paramSpec = ParameterSpec.builder(propName, typeName)
-                result.defaultValue?.let { paramSpec.defaultValue(it) }
-                ctor.addParameter(paramSpec.build())
-            }
-            clazz.primaryConstructor(ctor.build())
+        if (properties.isEmpty()) {
+            // If there are no properties, we still need a primary constructor
+            // to avoid "No primary constructor found" error.
+            val dummyProp = "DO_NOT_USE_ME"
+            clazz.addProperty(PropertySpec.builder(dummyProp, NOTHING).initializer(dummyProp).build())
+            ctor.addParameter(ParameterSpec.builder(dummyProp, NOTHING).defaultValue(null).build())
         }
+
+        for ((propName, propSchema) in properties) {
+            val result = TypeSpecConverter(openAPI, propSchema, propName).convert()
+            result.children.forEach { clazz.addType(it) }
+            val typeName = if (propName in required) result.typeName else result.typeName.toNullable()
+            clazz.addProperty(PropertySpec.builder(propName, typeName).initializer(propName).build())
+            val paramSpec = ParameterSpec.builder(propName, typeName)
+            result.defaultValue?.let { paramSpec.defaultValue(it) }
+            ctor.addParameter(paramSpec.build())
+        }
+        clazz.primaryConstructor(ctor.build())
 
         return clazz.build()
     }
@@ -118,7 +125,7 @@ class TypeSpecConverter(
 
             "string" -> {
                 if (schema.enum != null) {
-                    val enumName = schemaName.upperPascal()
+                    val enumName = schemaName.escapeIdentifier().capitalize()
                     val enumType = buildEnum(enumName, schema)
                     children.add(enumType)
                     typeName = ClassName("", enumName)
@@ -145,7 +152,7 @@ class TypeSpecConverter(
             }
 
             "object" -> {
-                val className = schemaName.upperPascal()
+                val className = schemaName.escapeIdentifier().capitalize()
                 val clazz = buildDataClass(className, schema)
                 children.add(clazz)
                 typeName = ClassName("", className)

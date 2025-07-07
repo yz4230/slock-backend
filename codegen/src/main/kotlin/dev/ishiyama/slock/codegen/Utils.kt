@@ -6,10 +6,11 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
 
 object Utils {
-    fun String.upperPascal(): String =
-        this
-            .split('_', '-')
-            .joinToString("") { it.replaceFirstChar { c -> c.uppercase() } }
+    val CHARS_TO_ESCAPE = setOf('.', ';', '[', ']', '/', '<', '>', ':', '\\')
+
+    fun String.escapeIdentifier(): String = map { if (CHARS_TO_ESCAPE.contains(it)) '_' else it }.joinToString("")
+
+    fun String.capitalize() = replaceFirstChar { it.uppercase() }
 
     fun TypeName.toNullable() = this.copy(nullable = true)
 

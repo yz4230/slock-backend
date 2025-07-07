@@ -6,8 +6,9 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import dev.ishiyama.slock.codegen.Utils.capitalize
+import dev.ishiyama.slock.codegen.Utils.escapeIdentifier
 import dev.ishiyama.slock.codegen.Utils.toNullable
-import dev.ishiyama.slock.codegen.Utils.upperPascal
 import io.swagger.v3.oas.models.OpenAPI
 import kotlin.collections.iterator
 
@@ -37,7 +38,7 @@ class PathsObjectBuilder(
                 val ctor = FunSpec.constructorBuilder()
                 val clazz =
                     TypeSpec
-                        .classBuilder(operationId.upperPascal())
+                        .classBuilder(operationId.escapeIdentifier().capitalize())
                         .addAnnotation(
                             AnnotationSpec
                                 .builder(Resource)
