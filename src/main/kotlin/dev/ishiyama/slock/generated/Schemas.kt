@@ -3,6 +3,7 @@
 package dev.ishiyama.slock.generated
 
 import kotlin.Boolean
+import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
 import kotlinx.serialization.Serializable
@@ -60,6 +61,11 @@ public object Schemas {
   )
 
   @Serializable
+  public data class MeResponse(
+    public val user: Schemas.User,
+  )
+
+  @Serializable
   public data class Message(
     public val id: String,
     public val userId: String,
@@ -68,6 +74,11 @@ public object Schemas {
     public val content: String,
     public val createdAt: String,
     public val updatedAt: String,
+  )
+
+  @Serializable
+  public data class RegisterFailedResponse(
+    public val message: String,
   )
 
   @Serializable
@@ -82,6 +93,21 @@ public object Schemas {
   public data class RegisterResponse(
     public val user: Schemas.User,
     public val token: String,
+  )
+
+  @Serializable
+  public data class TypeSpec_Http_BadRequestResponse(
+    public val DO_NOT_USE_ME: Nothing,
+  )
+
+  @Serializable
+  public data class TypeSpec_Http_CreatedResponse(
+    public val DO_NOT_USE_ME: Nothing,
+  )
+
+  @Serializable
+  public data class TypeSpec_Http_OkResponse(
+    public val DO_NOT_USE_ME: Nothing,
   )
 
   @Serializable
