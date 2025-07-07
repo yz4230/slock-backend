@@ -27,11 +27,11 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.netty.EngineMain
-import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.plugins.statuspages.exception
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respond
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -102,14 +102,14 @@ fun Application.module() {
     install(CallLogging) { level = Level.INFO }
     install(Resources)
     install(StatusPages) {
-        exception<BadRequestException> { call, cause ->
+        exception<Exception> { call, cause ->
             for (cause in cause.flattenCauses()) {
-                when (cause) {
-                    is MissingFieldException ->
-                        call.respond(
-                            HttpStatusCode.BadRequest,
-                            FieldErrorResponse(cause),
-                        )
+                if (cause is MissingFieldException) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        FieldErrorResponse(cause),
+                    )
+                    return@exception
                 }
             }
             throw cause
