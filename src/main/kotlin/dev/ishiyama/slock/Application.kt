@@ -117,8 +117,9 @@ fun Application.module() {
     install(CORS) {
         Config.corsAllowedOrigins.forEach { allowHost(it) }
         anyMethod()
-        allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
     }
 
     configureRouting()
